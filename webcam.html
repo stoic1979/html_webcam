@@ -1,0 +1,80 @@
+<html>
+	<head>	
+		<title>Web Cam Demo</title>
+	</head>
+	<body>
+	<style>
+		.snap-btn{
+			margin: 20px 0px 0px 485px;
+			height: 84px;
+			border-radius: 26px;
+			background: #00804A none repeat scroll 0% 0%;
+			color: #FFF;
+			font-size: 19px;
+			width: 301px;
+			}
+	</style>
+		<div style="width:100%;float: left;background:rgb(180, 223, 225);height: 114%;border: 1px solid;">
+			<h2><span style="margin-left: 220px;background: rgb(135, 212, 135) none repeat scroll 0% 0%;
+padding: 5px;">Web Cam Demo</span> <span style="margin-left: 440px;background: rgb(135, 212, 135) none repeat scroll 0% 0%;
+padding: 5px;"> Snapshot Demo</span></h2>
+			
+			<div style="width: 640px;height: 480px;border: 5px solid rgb(165, 61, 61);float: left;background:#000000;">				
+				<video  id="video" autoplay="autoplay" width="640" height="480"></video>
+				<button id="snap" class="snap-btn">Take Snapshot</button>
+			</div>
+			<div style="width: 620px;height: 480px;border: 5px solid rgb(165, 61, 61);float:right;background:#000000;">
+				<canvas id="canvas" width="640" height="480"></canvas>
+			</div>		
+		</div>
+		<script>
+	
+		// Put event listeners into place
+		window.addEventListener("DOMContentLoaded", function() {
+			// Grab elements, create settings, etc.
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            var video = document.getElementById('video');
+            var mediaConfig =  { video: true };
+            var errBack = function(e) {
+            	console.log('An error has occurred!', e)
+            };
+
+			// Put video listeners into place
+            if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia(mediaConfig).then(function(stream) {
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();
+                });
+            }
+
+            /* Legacy code below! */
+            else if(navigator.getUserMedia) { // Standard
+				navigator.getUserMedia(mediaConfig, function(stream) {
+					video.src = stream;
+					video.play();
+				}, errBack);
+			} else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+				navigator.webkitGetUserMedia(mediaConfig, function(stream){
+					video.src = window.webkitURL.createObjectURL(stream);
+					video.play();
+				}, errBack);
+			} else if(navigator.mozGetUserMedia) { // Mozilla-prefixed
+				navigator.mozGetUserMedia(mediaConfig, function(stream){
+					video.src = window.URL.createObjectURL(stream);
+					video.play();
+				}, errBack);
+			}
+
+			// Trigger photo take
+			document.getElementById('snap').addEventListener('click', function() {
+				context.drawImage(video, 0, 0, 640, 480);
+			});
+		}, false);
+
+	</script>
+
+	</body>
+</html>
+
+
